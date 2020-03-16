@@ -12,7 +12,7 @@ RUN CGO_ENABLED=0 go build -mod=vendor
 
 FROM alpine:3.10
 
-COPY --from=0 /app/clickhouse-exporter/clickhouse-exporter /usr/local/bin/clickhouse-exporter
+COPY --from=0 /app/clickhouse-exporter/clickhouse_exporter /usr/local/bin/clickhouse-exporter
 
 ENTRYPOINT ["/usr/local/bin/clickhouse-exporter"]
 
