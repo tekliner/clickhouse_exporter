@@ -53,6 +53,11 @@ func NewExporter(uri url.URL, insecure bool, user, password string) *Exporter {
 	q.Set("query", "select database, table, sum(bytes) as bytes, count() as parts, sum(rows) as rows from system.parts where active = 1 group by database, table")
 	partsURI.RawQuery = q.Encode()
 
+	bufferTablesUri := uri
+	q.Set("query", "select database, table, sum(bytes) as bytes, count() as parts, sum(rows) as rows from system.parts where active = 1 group by database, table")
+	bufferTablesUri.RawQuery = q.Encode()
+
+
 	return &Exporter{
 		metricsURI:      metricsURI.String(),
 		asyncMetricsURI: asyncMetricsURI.String(),

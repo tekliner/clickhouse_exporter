@@ -1,18 +1,21 @@
-FROM golang:1.11 AS BUILD
+FROM golang:1.13-alpine
 
-LABEL maintainer="Roman Tkalenko"
+LABEL maintainer="Andrey Inishev"
 
-COPY . /go/src/github.com/Percona-Lab/clickhouse_exporter
+RUN apk update
+RUN apk add git mercurial
 
-WORKDIR /go/src/github.com/Percona-Lab/clickhouse_exporter
+WORKDIR /app/clickhouse-exporter
+COPY . .
 
-RUN make init && make
+RUN CGO_ENABLED=0 go build -mod=vendor
+RUN go install -mod=vendor
 
-FROM frolvlad/alpine-glibc:alpine-3.8
+FROM alpine:3.10
 
-COPY --from=BUILD /go/bin/clickhouse_exporter /usr/local/bin/clickhouse_exporter
+COPY --from=0 clickhouse-exporter /usr/local/bin/clickhouse-exporter
 
-ENTRYPOINT ["/usr/local/bin/clickhouse_exporter"]
+ENTRYPOINT ["/usr/local/bin/clickhouse-exporter"]
 
 CMD ["-scrape_uri=http://localhost:8123"]
 
