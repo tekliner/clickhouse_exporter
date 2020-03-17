@@ -11,4 +11,4 @@ spec:
     matchLabels:
       app: clickhouse-exporter
   endpoints:
-  - port: clickhouse-exporter
+  - port: exporter

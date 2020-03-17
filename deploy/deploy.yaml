@@ -19,7 +19,7 @@ spec:
           image: 716309063777.dkr.ecr.us-east-1.amazonaws.com/ftps-checker:latest
           ports:
             - containerPort: 9116
-              name: ftps-checker
+              name: exporter
           command:
             - /usr/local/bin/ftps-checker
           resources:

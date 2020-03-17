@@ -9,6 +9,6 @@ spec:
   selector:
     app: clickhouse-exporter
   ports:
-    - name: clickhouse-exporter
+    - name: exporter
       port: 9116
       protocol: TCP

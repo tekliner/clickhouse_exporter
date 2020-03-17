@@ -28,7 +28,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: clickhouse-exporter
-  namespace: production
+  namespace: clickhouse
 spec:
   replicas: 1
   selector:
@@ -63,9 +63,9 @@ spec:
                 cpu: "100m"
 """
             archiveArtifacts: 'deploy.yaml'
-            sh "kubectl apply -f deploy.yaml -n production"
-            sh "kubectl apply -f deploy/service.yaml -n production"
-            sh "kubectl apply -f deploy/servicemonitor.yaml -n production"
+            sh "kubectl apply -f deploy.yaml -n clickhouse"
+            sh "kubectl apply -f deploy/service.yaml -n clickhouse"
+            sh "kubectl apply -f deploy/servicemonitor.yaml -n clickhouse"
         }
     }
 }
