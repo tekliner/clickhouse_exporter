@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: clickhouse-exporter
+  namespace: clickhouse
+  labels:
+    app: clickhouse-exporter
+spec:
+  selector:
+    app: clickhouse-exporter
+  ports:
+    - name: clickhouse-exporter
+      port: 9116
+      protocol: TCP

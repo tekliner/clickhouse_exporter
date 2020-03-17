@@ -1,0 +1,14 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: clickhouse-exporter
+  namespase: production
+  labels:
+    app: clickhouse-exporter
+    area: improvado1
+spec:
+  selector:
+    matchLabels:
+      app: clickhouse-exporter
+  endpoints:
+  - port: clickhouse-exporter
