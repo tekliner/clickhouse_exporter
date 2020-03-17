@@ -46,6 +46,9 @@ spec:
           ports:
           - containerPort: 9116
             name: exporter
+          command:
+          - /usr/local/bin/clickhouse-exporter
+          - -scrape_uri=http://clickhouse-clickhouse-poc:8123/
           env:
           - name: CLICKHOUSE_USER
             valueFrom:
