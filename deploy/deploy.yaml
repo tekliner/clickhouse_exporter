@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: clickhouse-exporter
+  namespace: clickhouse
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: clickhouse-exporter
+  template:
+    metadata:
+      matchLabels:
+        app: clickhouse-exporter
+    spec:
+      containers:
+        - name: clickhouse-exporter
+          # Replace this with the built image name
+          image: 716309063777.dkr.ecr.us-east-1.amazonaws.com/ftps-checker:latest
+          ports:
+            - containerPort: 9116
+              name: ftps-checker
+          command:
+            - /usr/local/bin/ftps-checker
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "100m"

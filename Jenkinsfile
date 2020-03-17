@@ -16,44 +16,59 @@ node {
         }
     }
 
-    /* // check branch and select cluster to deploy
-    if (branch == 'master') {
+ if (branch == 'master') {
+      // deploy to production
         stage ('Wait for confirmation of build promotion') {
-            input message: 'Is this build ready for production?', submitter: 'tekliner'
+	          input message: 'Is this build ready for production?', submitter: 'tekliner'
         }
-        stage ('Deploy to production') {
-            writeFile file: 'operator.yaml', text: """
+	      stage ('Deploy to production') {
+            writeFile file: 'deploy.yaml', text: """
 ---
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: clickhouse-operator
+  name: clickhouse-exporter
+  namespace: production
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: rabbitmq-operator
+      app: clickhouse-exporter
   template:
     metadata:
       labels:
-        app: rabbitmq-operator
+        app: clickhouse-exporter
     spec:
-      serviceAccountName: rabbitmq-operator
       containers:
-        - name: rabbitmq-operator
-          image: 716309063777.dkr.ecr.us-east-1.amazonaws.com/rabbitmq-operator:${branch}-${build}
-          command:
-          - rabbitmq-operator
-          imagePullPolicy: Always
+        - name: clickhouse-exporter
+          # Replace this with the built image name
+          image: 716309063777.dkr.ecr.us-east-1.amazonaws.com/clickhouse-exporter:${branch}-${build}
+          ports:
+          - containerPort: 2112
+            name: clickhouse-exporter
           env:
-            - name: POD_NAME
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.name
-            - name: OPERATOR_NAME
-              value: "rabbitmq-operator"
-            - name: WATCH_NAMESPACE
-              value: ""
+          - name: CLICKHOUSE_USER
+            valueFrom:
+              secretKeyRef:
+                name: exporter-creds
+                key: CLICKHOUSE_USER
+          - name: CLICKHOUSE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: exporter-creds
+                key: CLICKHOUSE_PASSWORD
+          resources:
+              limits:
+                memory: "128Mi"
+                cpu: "100m"
+"""
+            archiveArtifacts: 'deploy.yaml'
+            sh "kubectl apply -f deploy.yaml -n production"
+            sh "kubectl apply -f deploy/service.yaml -n production"
+            sh "kubectl apply -f deploy/servicemonitor.yaml -n production"
+        }
+    }
+
 """
             archiveArtifacts: 'operator.yaml'
             sh "kubectl apply -f operator.yaml -n messaging"
