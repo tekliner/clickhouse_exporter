@@ -44,8 +44,8 @@ spec:
           # Replace this with the built image name
           image: 716309063777.dkr.ecr.us-east-1.amazonaws.com/clickhouse-exporter:${branch}-${build}
           ports:
-          - containerPort: 2112
-            name: clickhouse-exporter
+          - containerPort: 9116
+            name: exporter
           env:
           - name: CLICKHOUSE_USER
             valueFrom:
